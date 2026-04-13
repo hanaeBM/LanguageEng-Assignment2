@@ -39,7 +39,7 @@ def compute_accuracy(query_vecs, gallery_vecs,df,lang, metric='cosine', k=1):
             correct += 1
          # add sentences incorect:
         else:
-                Inc.append(f"{dict[lang][i]}(idx:{np.where(distances[i]==i)}) ")# AJOUTER INDICE !!
+                Inc.append(f"{dict[lang][i]}(idx:{int(np.where(distances[i]==i)[0])})")
     if k==3:
         print(f"3 Failed Sentences{Inc[:3]}")
     return correct / len(query_vecs)
