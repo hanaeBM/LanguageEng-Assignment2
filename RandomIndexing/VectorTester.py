@@ -40,7 +40,7 @@ class VectorTester:
             text = input('> ')
 
             
-    def find_nearest(self, words, m='cosine'):
+    def find_nearest(self, words, m='manhattan'):
         """
         Function returning k nearest neighbors with distances for each word
         in `words`
@@ -113,7 +113,7 @@ def main() :
     
     vt = VectorTester()
     vt.read_vectors( arguments.file )
-    if arguments.words:                          # ← ajoute
+    if arguments.words:                          
         words = arguments.words.split(',')
         results = vt.find_nearest(words)
         for w, n in zip(words, results):
