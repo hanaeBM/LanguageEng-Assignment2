@@ -138,14 +138,14 @@ See section 1.
 - **Non-zero proportion** — has less impact than dimensionality. Within a given dimension, varying from 5% to 50% produces similar quality results.
 
 ### Conclusion
-Dimensionality is the dominant factor — higher is better up to ~1000, after which gains diminish. Non-zero proportion has limited impact; 10% is a good default. Dimension 10 is clearly insufficient for meaningful word representations.
+Dimensionality is the dominant factor, higher is better up to ~1000, after which gains diminish. Non-zero proportion has limited impact; 10% is a good default. Dimension 10 is clearly insufficient for meaningful word representations.
 
 ---
 
 ## 4. Window Size (cosine, normalized, dim=2000)
 
 ### Window 0 (symmetric)
-All words return the same random neighbors (`'wanted`, `hurry-ing`, `colour`...) with distance 1.0. No context is captured — all context vectors remain zero and cannot be compared meaningfully.
+All words return the same random neighbors (`'wanted`, `hurry-ing`, `colour`...) with distance 1.0. No context is captured, all context vectors remain zero and cannot be compared meaningfully.
 
 ### Window 3 (symmetric)
 | Word | Neighbors |
@@ -188,7 +188,7 @@ All words return the same random neighbors (`'wanted`, `hurry-ing`, `colour`...)
 - **Asymmetric (L > R)** — emphasizes what precedes the word. `harry` gets more antagonist characters like `moody`, `snape` as neighbors.
 
 ### Conclusion
-- **Window 0** is useless — no context means no information.
+- **Window 0** is useless, no context means no information.
 - **Small windows (2-3)** capture syntactic similarity (same POS, same grammatical role).
 - **Large windows (10)** capture broader semantic/topical similarity but introduce noise from common words.
 - **Asymmetric windows** shift the focus between preceding and following context, which can be useful depending on the language structure being studied.
@@ -198,7 +198,7 @@ All words return the same random neighbors (`'wanted`, `hurry-ing`, `colour`...)
 
 ## General Conclusion
 
-- **Metric**: cosine is the best — robust with or without normalization, invariant to vector magnitude
+- **Metric**: cosine is the best, robust with or without normalization, invariant to vector magnitude
 - **Normalization**: essential for euclidean and manhattan; cosine is unaffected
 - **Dimension**: larger = better quality up to ~1000; beyond that gains diminish; 10 is too small
 - **Non-zero proportion**: limited impact; 10% is a reliable default
@@ -231,10 +231,10 @@ All words return the same random neighbors (`'wanted`, `hurry-ing`, `colour`...)
 | enter | leave, break, fight | leave, pass, steal, join |
 
 ### Observation
-- Word2Vec distances are generally larger (0.15–0.29) than Random Indexing (0.02–0.13), suggesting less tight clusters — likely due to fewer epochs or smaller dimension (50 vs 2000).
+- Word2Vec distances are generally larger (0.15–0.29) than Random Indexing (0.02–0.13), suggesting less tight clusters, likely due to fewer epochs or smaller dimension (50 vs 2000).
 - Word2Vec finds some meaningful semantic neighbors (`school` → `hogwarts`, `gryffindor` → `slytherin`) that are arguably better than Random Indexing.
-- Some Word2Vec results are unexpected (`wand` → `jaw`, `tongue`) — these are body parts that appear in similar syntactic positions, suggesting the model has learned some distributional patterns but may need more training.
-- `good` → `bad` is interesting — Word2Vec captures antonyms as well as synonyms since they appear in similar contexts.
+- Some Word2Vec results are unexpected (`wand` → `jaw`, `tongue`), these are body parts that appear in similar syntactic positions, suggesting the model has learned some distributional patterns but may need more training.
+- `good` → `bad` is interesting, Word2Vec captures antonyms as well as synonyms since they appear in similar contexts.
 
 ### Conclusion
 Random Indexing produces more consistent results with the default configuration (dim=2000). Word2Vec has more potential but requires more training (more epochs, larger dimension) to match the quality. With more training data and epochs, Word2Vec typically outperforms Random Indexing as it learns non-linear relationships between words.
@@ -290,10 +290,10 @@ Random Indexing produces more consistent results with the default configuration 
 **Mean-Centered + TF-IDF (60.2% / 61.4%)** — Surprisingly worse than Mean-Centered alone. TF-IDF already modifies the distribution of word weights, and combining it with mean-centering may over-correct or introduce instability in the centroid computation.
 
 ### Why Mean-Centering works so well
-All sentences in a language share a common "linguistic bias" — frequent words, common grammatical structures — that pushes all sentence vectors in a similar direction. By subtracting the mean, we remove this shared component and expose the true semantic differences between sentences, making cross-lingual alignment much more accurate.
+All sentences in a language share a common "linguistic bias", frequent words, common grammatical structures, that pushes all sentence vectors in a similar direction. By subtracting the mean, we remove this shared component and expose the true semantic differences between sentences, making cross-lingual alignment much more accurate.
 
 ### Question: Which mean to subtract for Mean-Centered TF-IDF?
 We should subtract the **TF-IDF weighted mean** (not the original mean), because the TF-IDF vectors live in a different space than the simple averages. Subtracting the mean of the TF-IDF vectors correctly centers that specific representation.
 
 ### Conclusion
-Mean-centering is the most impactful transformation — it dramatically improves alignment from ~25% to ~72%. TF-IDF alone helps but is not sufficient. Combining both does not always improve results, suggesting the two methods partially address the same problem (dominance of frequent words).
+Mean-centering is the most impactful transformation, it dramatically improves alignment from ~25% to ~72%. TF-IDF alone helps but is not sufficient. Combining both does not always improve results, suggesting the two methods partially address the same problem (dominance of frequent words).
