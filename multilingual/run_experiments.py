@@ -41,6 +41,7 @@ def compute_accuracy(query_vecs, gallery_vecs,df,lang, metric='cosine', k=1):
         else:
                 Inc.append(f"{dict[lang][i]}(idx:{int(np.where(distances[i]==i)[0])})")
     if k==3:
+
         print(f"3 Failed Sentences{Inc[:3]}")
     return correct / len(query_vecs)
 
@@ -118,15 +119,12 @@ def TfIdf(df,en_model,es_model):
             tokens = re.findall(pattern, s.lower())
             
             mean = np.zeros(model.vector_size)
-            count = 0
             
             for w in tokens:
 
                 if w in model:
                     base[i] += model[w]*tf[i][w]*np.log(len(v[0])/dfreq[w])
-                    count += 1
-            if count!=0:
-                base[i]=base[i]/count
+                    
 
 
                     
@@ -166,6 +164,7 @@ def main():
     mean_es_tfidf = np.mean(es_tfidf_vecs,axis=0)
     # ----------------------
     
+        
     # 3. Mean-Centered (No TF-IDF) 
     run_eval(en_base - mean_en, es_base - mean_es,df,"Mean-Centered (Simple)")
     
