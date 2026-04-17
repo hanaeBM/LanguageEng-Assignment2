@@ -6,9 +6,7 @@ RESULTS="results.txt"
 
 > $RESULTS  
 
-echo "======================================" | tee -a $RESULTS
 echo "DIMENSIONALITY EXPERIMENTS" | tee -a $RESULTS
-echo "======================================" | tee -a $RESULTS
 
 for DIM in 10 50 100 1000; do
     for PCT in 5 10 20 50; do
@@ -26,9 +24,7 @@ for DIM in 10 50 100 1000; do
 done
 
 echo "" | tee -a $RESULTS
-echo "======================================" | tee -a $RESULTS
 echo "WINDOW SIZE EXPERIMENTS" | tee -a $RESULTS
-echo "======================================" | tee -a $RESULTS
 
 # Symmetric windows
 for W in 0 3 10; do
@@ -57,6 +53,5 @@ for LW in 1 2 5; do
 done
 
 echo "" | tee -a $RESULTS
-echo "======================================" | tee -a $RESULTS
 echo "ALL EXPERIMENTS DONE" | tee -a $RESULTS
 echo "Results saved in $RESULTS" | tee -a $RESULTS

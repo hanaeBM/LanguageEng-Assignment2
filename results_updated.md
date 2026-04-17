@@ -48,10 +48,10 @@
 | school | house (10.77), class (11.13), point (12.37), castle (12.64) |
 
 ### Observation
-Cosine produces semantically meaningful neighbors with small distances (0.02–0.13). With normalized vectors, Euclidean distances are now in the expected range (0–2) and find the same semantic neighbors as cosine. Manhattan distances are larger (6–17) even with normalized vectors  this is expected since Manhattan is not bounded between 0 and 2 for normalized vectors (theoretical max = 2×dim). All three metrics find coherent neighbors once vectors are properly normalized, but cosine remains the most compact and interpretable.
+Cosine produces semantically meaningful neighbors with small distances (0.02–0.13). With normalized vectors, Euclidean distances are now in the expected range (0–2) and find the same semantic neighbors as cosine. Manhattan distances are larger (6–17) even with normalized vectors — this is expected since Manhattan is not bounded between 0 and 2 for normalized vectors (theoretical max = 2×dim). All three metrics find coherent neighbors once vectors are properly normalized, but cosine remains the most compact and interpretable.
 
 ### Conclusion
-**Cosine is the preferred metric**  it captures semantic similarity well, is invariant to vector magnitude, and produces the most compact distances. Euclidean works correctly with normalized vectors and finds similar neighbors. Manhattan also works but produces larger raw distances due to its unbounded nature in high dimensions. All three metrics agree on the nearest neighbors once normalization is applied.
+**Cosine is the preferred metric** — it captures semantic similarity well, is invariant to vector magnitude, and produces the most compact distances. Euclidean works correctly with normalized vectors and finds similar neighbors. Manhattan also works but produces larger raw distances due to its unbounded nature in high dimensions. All three metrics agree on the nearest neighbors once normalization is applied.
 
 ---
 
@@ -254,8 +254,8 @@ Random Indexing produces more consistent results with the default configuration 
 |--------|-------------|-------------|-------------|-------------|
 | Baseline (Simple Mean) | 25.00% | 41.60% | 20.60% | 31.20% |
 | TF-IDF Weighted | 37.80% | 52.80% | 32.20% | 49.00% |
-| Mean-Centered (Simple) | **72.20%** | **85.60%** | **75.20%** | **87.00%** |
-| Mean-Centered + TF-IDF | 60.20% | 72.40% | 61.40% | 71.00% |
+| Mean-Centered (Simple) | 72.20% | 85.60% | 75.20% | 87.00% |
+| Mean-Centered + TF-IDF | **77.40%** | **87.60%** | **77.20%** | **86.00%** |
 
 ### Failed Sentences (k=3)
 
@@ -275,9 +275,14 @@ Random Indexing produces more consistent results with the default configuration 
 - "Perhaps it would have been as well if he had left it wholly to myself." (idx:5)
 
 **Mean-Centered + TF-IDF — EN→ES failures:**
-- "He meant not to be unkind, however, and, as a mark of his affection for the three girls, he left them a thousand pounds a-piece." (idx:81)
-- "When he gave his promise to his father, he meditated within himself to increase the fortunes of his sisters by the present of a thousand pounds a-piece." (idx:11)
-- "No sooner was his father's funeral over, than Mrs. John Dashwood, without sending any notice..." (idx:20)
+- "She was sensible and clever; but eager in everything: her sorrows, her joys, could have no moderation." (idx:12)
+- "The agony of grief which overpowered them at first, was voluntarily renewed, was sought for, was created again and again." (idx:12)
+- "Had he been in his right senses, he could not have thought of such a thing as begging you to give away half your fortune from your own child." (idx:4)
+
+**Mean-Centered + TF-IDF — ES→EN failures:**
+- "Murió el anciano caballero, se leyó su testamento y, como casi todos los testamentos, éste dio por igual desilusiones y alegrías." (idx:11)
+- "Pero la fortuna, que había tardado tanto en llegar, fue suya durante sólo un año." (idx:4)
+- "Tenía inteligencia y buen juicio, pero era vehemente en todo; ni sus penas ni sus alegrías conocían la moderación." (idx:4)
 
 ### Observations
 
@@ -285,15 +290,15 @@ Random Indexing produces more consistent results with the default configuration 
 
 **TF-IDF (37.8% / 32.2%)** — Better than baseline. Down-weighting frequent words and up-weighting rare, informative words gives a more meaningful sentence representation.
 
-**Mean-Centered Simple (72.2% / 75.2%)** — Best results by far. Subtracting the global mean removes the "bias" shared by all sentences (common words, general language patterns) and leaves only the distinctive semantic content of each sentence. This makes translations much easier to align.
+**Mean-Centered Simple (72.2% / 75.2%)** — Very strong results. Subtracting the global mean removes the "bias" shared by all sentences (common words, general language patterns) and leaves only the distinctive semantic content of each sentence.
 
-**Mean-Centered + TF-IDF (60.2% / 61.4%)** — Surprisingly worse than Mean-Centered alone. TF-IDF already modifies the distribution of word weights, and combining it with mean-centering may over-correct or introduce instability in the centroid computation.
+**Mean-Centered + TF-IDF (77.4% / 77.2%)** — Best overall results. Combining TF-IDF weighting with mean-centering slightly improves over mean-centering alone, confirming the two methods are complementary when the TF-IDF normalization is correctly applied (without redundant division by count).
 
 ### Why Mean-Centering works so well
-All sentences in a language share a common "linguistic bias", frequent words, common grammatical structures — that pushes all sentence vectors in a similar direction. By subtracting the mean, we remove this shared component and expose the true semantic differences between sentences, making cross-lingual alignment much more accurate.
+All sentences in a language share a common "linguistic bias" — frequent words, common grammatical structures — that pushes all sentence vectors in a similar direction. By subtracting the mean, we remove this shared component and expose the true semantic differences between sentences, making cross-lingual alignment much more accurate.
 
 ### Question: Which mean to subtract for Mean-Centered TF-IDF?
 We should subtract the **TF-IDF weighted mean** (not the original mean), because the TF-IDF vectors live in a different space than the simple averages. Subtracting the mean of the TF-IDF vectors correctly centers that specific representation.
 
 ### Conclusion
-Mean-centering is the most impactful transformation, it dramatically improves alignment from ~25% to ~72%. TF-IDF alone helps but is not sufficient. Combining both does not always improve results, suggesting the two methods partially address the same problem (dominance of frequent words).
+Mean-centering is the most impactful transformation — it dramatically improves alignment from ~25% to ~72%. TF-IDF alone helps but is not sufficient. When correctly implemented (without redundant count normalization), combining both methods achieves the best results (~77%), confirming they address complementary aspects of the problem.
